@@ -218,9 +218,11 @@ class GetObjectsFromServerCommand(sublime_plugin.WindowCommand):
                     variable['Name'], variable['Type'])
 
         # write file
-        with open(output_file, "w") as file:
-            file.write(template.format(name=process.name, parameters=parameters, variables=variables,
+		textoutput = ''
+		textoutput = textoutput.format(name=process.name, parameters=parameters, variables=variables,
                                        datasource=datasource, prolog=procedure['prolog'], metadata=procedure['metadata'],
-                                       data=procedure['data'], epilog=procedure['epilog']))
+                                       data=procedure['data'], epilog=procedure['epilog'])
+        with open(output_file, "w") as file:
+            file.write(template.encode('utf8'))
 
         return
