@@ -222,7 +222,7 @@ class GetObjectsFromServerCommand(sublime_plugin.WindowCommand):
 		textoutput = template.format(name=process.name, parameters=parameters, variables=variables,
                                        datasource=datasource, prolog=procedure['prolog'], metadata=procedure['metadata'],
                                        data=procedure['data'], epilog=procedure['epilog'])
-		print textoutput
+        print(textoutput)
         # with open(output_file, "w") as file:
             # file.write(textoutput.encode('utf8'))
 
