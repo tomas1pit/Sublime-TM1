@@ -244,7 +244,7 @@ class GetObjectsFromServerCommand(sublime_plugin.WindowCommand):
                                        data=formatted_procedure['data'], epilog=formatted_procedure['epilog']))
 
         for section in formatted_procedure:
-            buffer_fine_name = section + 'buffer_file.txt'
+            buffer_fine_name = os.path.join(self._folder, section + 'buffer_file.txt')
             os.remove(buffer_fine_name)
 
         return
