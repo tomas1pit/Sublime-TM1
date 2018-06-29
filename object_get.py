@@ -1,4 +1,3 @@
-
 import json
 import os
 import sublime
@@ -9,37 +8,26 @@ from .connect import get_tm1_service
 PROCESS_TEMPLATE = '''###############################################################################
 ### Process: {name}
 ###############################################################################
-
 ###############################################################################
 ### PARAMETERS:
 {parameters}###############################################################################
-
 ###############################################################################
 ### DATASOURCE:
 {datasource}###############################################################################
-
 ###############################################################################
 ### VARIABLES:
 {variables}###############################################################################
-
 ###############################################################################
 ### PROLOG: ###################################################################
-
 {prolog}
-
 ###############################################################################
 ### METADATA: #################################################################
-
 {metadata}
-
 ###############################################################################
 ### DATA: #####################################################################
-
 {data}
-
 ###############################################################################
 ### EPILOG: ###################################################################
-
 {epilog}
 '''
 
@@ -136,11 +124,29 @@ class GetObjectsFromServerCommand(sublime_plugin.WindowCommand):
             '#****GENERATED STATEMENTS FINISH****'
         ]
 
+        formatted_procedure = {
+            'prolog': '',
+            'metadata': '',
+            'data': '',
+            'epilog': ''
+        }
+
         for section in procedure:
+            buffer_fine_name = section + 'buffer_file.txt'
+            with open(buffer_fine_name, "w") as buffer_file:
+                buffer_file.write(procedure[section])
+            with open(buffer_fine_name, "r") as buffer_file:
+                    counter = 1
+                    for line in buffer_file:
+                        if not counter % 2 == 0:
+                            formatted_procedure[section] += line
+                        counter += 1
+
+        for section in formatted_procedure:
             for item in clean:
-                procedure[section] = procedure[section].replace(item, '')
-                procedure[section] = procedure[
-                    section].lstrip("\r\n").rstrip("\'r\n")
+                formatted_procedure[section] = formatted_procedure[section].replace(item, '')
+                formatted_procedure[section] = formatted_procedure[
+                    section].lstrip("\r\n").rstrip("\r\n")
 
         template = PROCESS_TEMPLATE
 
@@ -220,7 +226,11 @@ class GetObjectsFromServerCommand(sublime_plugin.WindowCommand):
         # write file
         with open(output_file, "w") as file:
             file.write(template.format(name=process.name, parameters=parameters, variables=variables,
-                                       datasource=datasource, prolog=procedure['prolog'], metadata=procedure['metadata'],
-                                       data=procedure['data'], epilog=procedure['epilog']))
+                                       datasource=datasource, prolog=formatted_procedure['prolog'], metadata=formatted_procedure['metadata'],
+                                       data=formatted_procedure['data'], epilog=formatted_procedure['epilog']))
+
+        for section in formatted_procedure:
+            buffer_fine_name = section + 'buffer_file.txt'
+            os.remove(buffer_fine_name)
 
         return
