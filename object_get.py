@@ -132,7 +132,7 @@ class GetObjectsFromServerCommand(sublime_plugin.WindowCommand):
         }
 
         for section in procedure:
-            buffer_fine_name = section + 'buffer_file.txt'
+            buffer_fine_name = os.path.join(self._folder, selection + 'buffer_file.txt')
             with open(buffer_fine_name, "w") as buffer_file:
                 buffer_file.write(procedure[section])
             with open(buffer_fine_name, "r") as buffer_file:
