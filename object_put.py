@@ -93,8 +93,9 @@ class PutObjectToServerCommand(sublime_plugin.WindowCommand):
                     search_active = True
 
         for section in ['PARAMETERS', 'DATASOURCE', 'VARIABLES']:
-            section_text[section] = section_text[section].replace("### ", "")
+            section_text[section] = section_text[section].replace("###    ", "")
 
+        # Parameters
         parameters = yaml.load(section_text['PARAMETERS'])
         if parameters == 'None':
             parameters = []
@@ -124,8 +125,9 @@ class PutObjectToServerCommand(sublime_plugin.WindowCommand):
 
         # Variables
         variables = yaml.load(section_text['VARIABLES'])
-        for variable in process.variables.copy():
-            process.remove_variable(variable['Name'])
+
+        # for variable in process.variables.copy():
+        #     process.remove_variable(variable['Name'])
 
         if variables != 'None':
             for x in variables:
@@ -135,9 +137,14 @@ class PutObjectToServerCommand(sublime_plugin.WindowCommand):
                 else:
                     var_type = 'String'
                     var_name = x['name'].replace('(String)', '')
-
                 var_name = var_name.rstrip().lstrip()
-                process.add_variable(var_name, var_type)
+                exists = False
+                for variable in process.variables.copy():
+                    # process.remove_variable(variable['Name'])
+                    if variable['Name'] == var_name:
+                        exists = True
+                if not exists:
+                    process.add_variable(var_name, var_type)
 
         process.prolog_procedure = section_text['PROLOG']
         process.metadata_procedure = section_text['METADATA']
