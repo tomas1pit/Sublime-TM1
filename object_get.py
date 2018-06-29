@@ -117,12 +117,12 @@ class GetObjectsFromServerCommand(sublime_plugin.WindowCommand):
             'epilog': process.epilog_procedure
         }
 
-        clean = [
-            '#****Begin: Generated Statements***',
-            '#****End: Generated Statements****',
-            '#****GENERATED STATEMENTS START****',
-            '#****GENERATED STATEMENTS FINISH****'
-        ]
+        clean = {
+            'beg1': '#****Begin: Generated Statements***',
+            'end1': '#****End: Generated Statements****',
+            'beg2': '#****GENERATED STATEMENTS START****',
+            'end2': '#****GENERATED STATEMENTS FINISH****'
+        }
 
         formatted_procedure = {
             'prolog': '',
@@ -143,8 +143,22 @@ class GetObjectsFromServerCommand(sublime_plugin.WindowCommand):
                         counter += 1
 
         for section in formatted_procedure:
+            beg_end = formatted_procedure[section].find(clean['beg1']) + len(clean['beg1']) + 1                
+            if formatted_procedure[section].find(clean['beg1']) >= 0 and not beg_end == formatted_procedure[section].find(clean['end1']):
+                removingstring = formatted_procedure[section]
+                beg = int(formatted_procedure[section].find(clean['beg1']))
+                end = int(formatted_procedure[section].find(clean['end1']) + len(clean['end1']))
+                removingstring = removingstring[beg:end]
+                formatted_procedure[section] = formatted_procedure[section].replace(removingstring, '')
+
+            beg_end = formatted_procedure[section].find(clean['beg2']) + len(clean['beg2']) + 1
+            if formatted_procedure[section].find(clean['beg2']) >= 0 and not beg_end == formatted_procedure[section].find(clean['end2']):
+                removingstring = formatted_procedure[section]
+                removingstring = removingstring[int(formatted_procedure[section].find(clean['beg2'])):int(formatted_procedure[section].find(clean['end2']) + len(clean['end2']))]
+                formatted_procedure[section] = formatted_procedure[section].replace(removingstring, '')
+
             for item in clean:
-                formatted_procedure[section] = formatted_procedure[section].replace(item, '')
+                formatted_procedure[section] = formatted_procedure[section].replace(clean[item], '')
                 formatted_procedure[section] = formatted_procedure[
                     section].lstrip("\r\n").rstrip("\r\n")
 
