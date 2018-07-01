@@ -64,3 +64,4 @@ Sublime-TM1 makes use of:
 
  - [TM1py](https://github.com/cubewise-code/TM1py)
  - [prettytable](https://pypi.python.org/pypi/PrettyTable)
+ - [ajmyers](https://github.com/ajmyers/Sublime-TM1)
