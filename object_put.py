@@ -126,32 +126,19 @@ class PutObjectToServerCommand(sublime_plugin.WindowCommand):
         # Variables
         variables = yaml.load(section_text['VARIABLES'])
 
+        for variable in process.variables.copy():
+            process.remove_variable(variable['Name'])
+
         if variables != 'None':
             for x in variables:
-                # removing = False
                 if '(Numeric)' in x['name']:
                     var_type = 'Numeric'
                     var_name = x['name'].replace('(Numeric)', '')
-                    # if '&r' in x['name']:
-                    #     var_name = var_name.replace('&r', '')
-                    #     process.remove_variable(var_name)
-                    #     removing = True
                 else:
                     var_type = 'String'
                     var_name = x['name'].replace('(String)', '')
-                    # if '&r' in x['name']:
-                    #     var_name = var_name.replace('&r', '')
-                    #     process.remove_variable(var_name)
-                    #     removing = True
                 var_name = var_name.rstrip().lstrip()
-                exists = False
-                for variable in process.variables.copy():
-                    if variable['Name'] == var_name:
-                        exists = True
-                if not exists:
-                    process.add_variable(var_name, var_type)
-                # elif exists and not removing:
-                    
+                process.add_variable(var_name, var_type)
 
         process.prolog_procedure = section_text['PROLOG']
         process.metadata_procedure = section_text['METADATA']
