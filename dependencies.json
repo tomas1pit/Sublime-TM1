@@ -3,7 +3,7 @@
         ">=3000": [
             "pyyaml",
             "requests",
-            "TM1py-ST3"
+            "TM1py"
         ]
     }
 }
